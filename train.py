@@ -17,23 +17,20 @@ from azureml.core.run import Run
 from azureml.data.dataset_factory import TabularDatasetFactory
 from azureml.core import Workspace, Dataset
 
-
 # TODO: Create TabularDataset using TabularDatasetFactory
-# Original Data is downloaded from:
-# "https://archive.ics.uci.edu/ml/datasets/Las+Vegas+Strip"
-# Data is uploaded to:
-# "https://raw.githubusercontent.com/Kbhamidipa3/udacityazure_capstone_final/main/LasVegasTripAdvisorReviews-Dataset.csv"
+# Data is located at:
+# "https://automlsamplenotebookdata.blob.core.windows.net/automl-sample-notebook-data/bankmarketing_train.csv"
 # azureml-core of version 1.0.72 or higher is required
 # azureml-dataprep[pandas] of version 1.1.34 or higher is required
 
 
-subscription_id = '94e14ad4-bf97-47e8-aae0-f9b85a7befa8'
-resource_group = 'aml-quickstarts-128009'
-workspace_name = 'quick-starts-ws-128009'
+subscription_id = '61c5c3f0-6dc7-4ed9-a7f3-c704b20e3b30'
+resource_group = 'aml-quickstarts-131566'
+workspace_name = 'quick-starts-ws-131566'
 
 workspace = Workspace(subscription_id, resource_group, workspace_name)
 
-ds = Dataset.get_by_name(workspace, name='LVhotels-Dataset')
+ds = Dataset.get_by_name(workspace, name='LVhotels-dataset')
 
 
 # In[6]:
@@ -73,7 +70,8 @@ def clean_data(data):
     #Replace blank and negative cells under Member years in a dataframe with random values between 1 and 10
     x_df['Member_years'] = x_df['Member_years'].apply(lambda l: l if l>0 else np.random.choice([1, 10]))
     # Restoring all entries to their default datatypes    x_df[['Nr_reviews','Nr_rooms','Nr_hotel_reviews','Member_years','Score', 'Helpful_votes', 'Hotel_stars', 'Nr_reviews']]=x_df[['Nr_reviews','Nr_rooms','Nr_hotel_reviews','Member_years','Score', 'Helpful_votes', 'Hotel_stars', 'Nr_reviews']].astype(np.int64)
-    x_df.to_csv("LV-github-automl.csv")    # Replace with one hot encode data
+    x_df.to_csv("LV-github-automl.csv")    
+    # Replace with one hot encode data
     User_countries = pd.get_dummies(x_df.User_country, prefix="User_country")
     x_df.drop("User_country", inplace=True, axis=1)
     x_df = x_df.join(User_countries)
@@ -89,31 +87,37 @@ def clean_data(data):
     User_continents = pd.get_dummies(x_df.User_continent, prefix="User_continent")
     x_df.drop("User_continent", inplace=True, axis=1)
     x_df = x_df.join(User_continents)
-    x_df["Pool"] = x_df.Pool.apply(lambda s: 1 if s == "YES" else 0)
-    x_df["Gym"] = x_df.Gym.apply(lambda s: 1 if s == "YES" else 0)
-    x_df["Tennis_court"] = x_df.Tennis_court.apply(lambda s: 1 if s == "YES" else 0)
-    x_df["Spa"] = x_df.Spa.apply(lambda s: 1 if s == "YES" else 0)
-    x_df["Casino"] = x_df.Casino.apply(lambda s: 1 if s == "YES" else 0)
-    x_df["Free_internet"] = x_df.Free_internet.apply(lambda s: 1 if s == "YES" else 0)
+    x_df["Pool"] = x_df.Pool.apply(lambda s: 1 if s else 0)
+    x_df["Gym"] = x_df.Gym.apply(lambda s: 1 if s else 0)
+    x_df["Tennis_court"] = x_df.Tennis_court.apply(lambda s: 1 if s else 0)
+    x_df["Spa"] = x_df.Spa.apply(lambda s: 1 if s else 0)
+    x_df["Casino"] = x_df.Casino.apply(lambda s: 1 if s else 0)
+    x_df["Free_internet"] = x_df.Free_internet.apply(lambda s: 1 if s else 0)
     x_df["month"] = x_df.Review_month.map(months)
     x_df["weekday"] = x_df.Review_weekday.map(weekdays)
     x_df.drop("Review_month", inplace=True, axis=1)
     x_df.drop("Review_weekday", inplace=True, axis=1)
+    x_df.to_csv("LV-github-hypertune.csv")   
     # Separate out the label data from the remainder of the dataframe
-    y_df = x_df.pop("Score").apply(lambda s: 1 if s >= 3 else 0)
+    y_df = x_df.pop("Score").astype(int)
+    x_df.to_csv("LV-github-data.csv") 
+    y_df.to_csv("LV-github-label.csv") 
 
     return (x_df,y_df)
     
 x, y = clean_data(ds)
+
+
 
 # In[7]:
 
 
 # TODO: Split data into train and test sets.
 
-x_train, x_test, y_train, y_test = train_test_split(x,y,test_size=0.33,random_state=42)
+x_train, x_test, y_train, y_test = train_test_split(x,y,test_size=0.25,random_state=42)
 
 run = Run.get_context()
+
 
 # In[8]:
 
@@ -145,3 +149,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
