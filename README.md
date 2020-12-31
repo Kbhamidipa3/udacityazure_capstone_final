@@ -17,7 +17,45 @@ In this project, two different models were used to train and compared as shown i
 ![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig2.jpg)
 
 ### Data cleanup - train.py module:
-The data was accessed from the "https://archive.ics.uci.edu/ml/datasets/Las+Vegas+Strip" link. Moro et al., 2017 (Moro, S., Rita, P., & Coelho, J. (2017). Stripping customers' feedback on hotels through data mining: The case of Las Vegas Strip. Tourism Management Perspectives, 23, 41-52.) performed data mining on the reviews available on the Trip Advisor site between January and August of 2015 and generated 504 rows of data. 
+The data was accessed from the "https://archive.ics.uci.edu/ml/datasets/Las+Vegas+Strip" link. Moro et al., 2017 (Moro, S., Rita, P., & Coelho, J. (2017). Stripping customers' feedback on hotels through data mining: The case of Las Vegas Strip. Tourism Management Perspectives, 23, 41-52.) performed data mining on the reviews available on the Trip Advisor site between January and August of 2015 and generated 504 rows of data. This dataset was uploaded to the following Github link:
+https://raw.githubusercontent.com/Kbhamidipa3/udacityazure_capstone_final/main/LasVegasTripAdvisorReviews-Dataset.csv
+The data was registered using "Registered Datasets" feature in Azure. Loading of data was done using the above github url link (copy the link from Raw) and as shown in the image below.
+![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig3.jpg)
+
+Once the data is loaded, the train.py accesses the data and converts it into a pandas dataframe. Then all spaces in the column names are replaced with underscore. 
+
+The next very important step is to modify the data under label "Score" to represent binary classification. For this purpose, any scores with values 3 and above are assigned a value of '1', while rest are assigned a value of '0'. 
+
+The next step is to fill the missing data as explained in the following sub-section.
+
+#### Missing Data
+As can be seen in the following image, there was data missing in some rows in the Nr. rooms, User. continent, Member years, Review month and Review weekday columns. Each of this missing data if filled using different methods as can be noticed from the train.py code and explained below: 
+1. Nr. rooms column was updated by performing a simple Google search of the specified hotel. 
+2. User. continent fields were updated based on the reviewer's country details. 
+3. Review month is updated using the middle month from the "Period of stay" column. For example, if the traveler's "Period of stay" is listed as Jun-Aug, then the row with missing data under "Review month" is set to July and so-on. 
+4. Missing rows under "Review weekday" were randomly selected to be "Sunday"
+5. All the missing rows under these coulmns are updated using key-value pairs from Dictionaries. 
+6. Missing rows under column "Member years" were updated randomly using values between 1 and 10.
+
+![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig4.jpg)
+
+#### Data preparation for AutoML method:
+The dataset available at this point suffices for running AutoML models. However, the data needs to be split into training, validation and testing data. For this purpose, the overall data is split into train and test data in 75%/25% ratio first and the available train data is eventually split into 75%/25% for training and validation. All three datasets are exported as csv files as shown in image below and uploaded to Github:
+
+![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig5.jpg)
+
+AutoML train data: https://raw.githubusercontent.com/Kbhamidipa3/udacityazure_capstone_final/main/LV_github_automl_train.csv
+AutoML validation data: https://raw.githubusercontent.com/Kbhamidipa3/udacityazure_capstone_final/main/LV_github_automl_validation.csv
+AutoML test data: https://raw.githubusercontent.com/Kbhamidipa3/udacityazure_capstone_final/main/LV_github_automl_test.csv
+
+#### Data preparation for Hyperdrive method:
+There are more steps remaining to get the model available for the Hyperdrive method and these are done in the train.py model as well. 
+1. Categorical data should be converted to numerical data before fitting a hyperdrive model. 
+2. One-hot encoding is one such method used where each category under a given parameter is split into it’s own column and assigned values ‘0’ or ‘1’ depending on whether an item doesn’t belong or belong under the given category respectively. Then all the individual columns are added back to the dataframe.
+3. The data is split into train and test values using a certain split such that more data is assigned under “train” data to get accurate model fits. In the following code, 75% of the data is used for training and remaining 33% is used for testing. Setting random_state (42 in the current model) to a specified value can ensure that the data will return same results after each execution. 
+4. Logistic Regression model is used to fit the train data. And two parameters were chosen – Inverse of Regularization Strength (denoted by C) and Maximum Iterations (denoted by max_iter). These are tuned as explained in the next subsection.
+5. The accuracy of the model is then determined using the score method.
+6. The trained model is then saved to the output folder using joblib.dump().
 
 
 
@@ -25,38 +63,6 @@ The data was accessed from the "https://archive.ics.uci.edu/ml/datasets/Las+Vega
 
 
 
-
-
-
-
-
-
-
-There are several steps involved in setting up and running the trained model, which is done in train.py for the HyperDrive model.
-* Tabular data is first accessed from the following link and dataset is created:
-https://automlsamplenotebookdata.blob.core.windows.net/automl-sample-notebook-data/bankmarketing_train.csv
-
-* Then the data is converted to dataframe using Pandas and missing values are dropped.
-
-* Subsequently the data is cleaned to get it ready for training the model. This involves translating categorical data into numerical data before fitting a machine learning model. 
-* One hot encoding is one such method used where each category under a given parameter is split into it’s own column and assigned values ‘0’ or ‘1’ depending on whether an item doesn’t belong or belong under the given category respectively. Then all the individual columns are added back to the dataframe.
-
-* Another method used to generate numerical data from categorical values is using key-value pairs from Dictionaries.
-
-
-* Other columns that have binary values like “married” or “not married” are assigned values 1 and 0 respectively.
-
-* A separate column is created for label values that we want to predict by popping it out from the dataframe.
-
-
-* Then the data is split into train and test values using a certain split such that more data is assigned under “train” data to get accurate model fits. In the following code, 67% of the data is used for training and remaining 33% is used for testing. Setting random_state (42 in the current model) to a specified value can ensure that the data will return same results after each execution. 
-
-* Logistic Regression model is used to fit the train data. And two parameters were chosen – Inverse of Regularization Strength (denoted by C) and Maximum Iterations (denoted by max_iter). These are tuned as explained in the next subsection.
-
- 
-* The accuracy of the model is then determined using the score method.
-
-* The trained model is then saved to the output folder using joblib.dump().
 
 
 
