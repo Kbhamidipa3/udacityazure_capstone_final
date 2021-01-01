@@ -14,13 +14,13 @@ This Capstone project is done as part of the Udacity Azure ML Nanodegree program
 ![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig1.jpg)
 
 In this project, two different models were used to train and compared as shown in the image below:
-![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig2.jpg)
+![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig2.JPG)
 
 ### Data cleanup - train.py module:
 The data was accessed from the "https://archive.ics.uci.edu/ml/datasets/Las+Vegas+Strip" link. Moro et al., 2017 (Moro, S., Rita, P., & Coelho, J. (2017). Stripping customers' feedback on hotels through data mining: The case of Las Vegas Strip. Tourism Management Perspectives, 23, 41-52.) performed data mining on the reviews available on the Trip Advisor site between January and August of 2015 and generated 504 rows of data. This dataset was uploaded to the following Github link:
 https://raw.githubusercontent.com/Kbhamidipa3/udacityazure_capstone_final/main/LasVegasTripAdvisorReviews-Dataset.csv
 The data was registered using "Registered Datasets" feature in Azure. Loading of data was done using the above github url link (copy the link from Raw) and as shown in the image below.
-![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig3.jpg)
+![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig3.JPG)
 
 Once the data is loaded, the train.py accesses the data and converts it into a pandas dataframe. Then all spaces in the column names are replaced with underscore. 
 
@@ -37,12 +37,12 @@ As can be seen in the following image, there was data missing in some rows in th
 5. All the missing rows under these coulmns are updated using key-value pairs from Dictionaries. 
 6. Missing rows under column "Member years" were updated randomly using values between 1 and 10.
 
-![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig4.jpg)
+![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig4.JPG)
 
 #### Data preparation for AutoML method:
 The dataset available at this point suffices for running AutoML models. However, the data needs to be split into training, validation and testing data. For this purpose, the overall data is split into train and test data in 75%/25% ratio first and the available train data is eventually split into 75%/25% for training and validation. All three datasets are exported as csv files as shown in image below and uploaded to Github:
 
-![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig5.jpg)
+![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig5.JPG)
 
 AutoML train data: https://raw.githubusercontent.com/Kbhamidipa3/udacityazure_capstone_final/main/LV_github_automl_train.csv
 AutoML validation data: https://raw.githubusercontent.com/Kbhamidipa3/udacityazure_capstone_final/main/LV_github_automl_validation.csv
@@ -57,7 +57,7 @@ https://raw.githubusercontent.com/Kbhamidipa3/udacityazure_capstone_final/main/L
 4. The data is split into train and test values using a certain split such that more data is assigned under “train” data to get accurate model fits. In the following code, 75% of the data is used for training and remaining 33% is used for testing. Setting random_state (42 in the current model) to a specified value can ensure that the data will return same results after each execution. 
 5. Logistic Regression model is used to fit the train data. And two parameters were chosen – Inverse of Regularization Strength (denoted by C) and Maximum Iterations (denoted by max_iter) as shown in the following image. These are tuned as explained in the next subsection.
 
-![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig6.jpg)
+![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig6.JPG)
 
 6. The accuracy of the model is then determined using the score method.
 7. The trained model is then saved to the output folder using joblib.dump().
@@ -74,12 +74,12 @@ https://raw.githubusercontent.com/Kbhamidipa3/udacityazure_capstone_final/main/L
  ### Hyperparameter Tuning parameters
 Hyperparameter tuning method is used to tune the two parameters defined in train.py to achieve the best prediction accuracy- Inverse of Regularization Strength (denoted by C) and Maximum Iterations (denoted by max_iter). The former parameter, “C”, helps to avoid overfitting. The parameter max_iter dictates the maximum number of iterations for the regression model so that the model doesn't run for too long resulting in diminishing returns. These parameters are randomly sampled using the RandomParameterSampling method to understand the impact of the parameters on the output prediction accuracy. Four sets of "C" values and five sets of "max_iter" values were chosen for this particular study as shown in the image below:
 
-![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig7.jpg)
+![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig7.JPG)
 
 Specifying an early stopping policy improves computational efficiency by terminating poorly performing runs. BanditPolicy was chosen as the early stopping policy in this project with slack factor and evaluation interval as the parameters. Every run is compared to the Best performing run at the end of the specified evaluation interval and in combination with the slack factor (allowed slack value compared to the best performing model) determines whether the run should be continued or terminated.**
 
 
-![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig8.jpg)
+![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig8.JPG)
 
 ## AutoML
 Unlike the Hypertuning method used earlier, Automated ML method automates the iterative tasks associated with the machine learning models thereby improving efficiency and productivity. Accuracy is used as the primary metric similar to the first method.
@@ -87,7 +87,7 @@ Unlike the Hypertuning method used earlier, Automated ML method automates the it
 ### AutoML parameters
 For train/test splitting, no specific test size is entered for the AutoML case, so a default of 25% test size will be used. As the final objective is to predict each potential hotel recommendation as "y" or "n", which is a classification problem, task is set as "Classification". The other parameter used is "experiment_timeout_hours", which is set to 0.3 per project specifications. This metric is important to ensure the model terminates within a reasonable time. Accuracy is used as the primary metric similar to the first method and the objective is to maximize the accuracy. "iteration_timeout_minutes" is set to 5 and "max_concurrent_iterations" is set to 4 meaning 4 iterations can be concurrently done. Column "Score" (the predicted column) is assigned to the label_name parameter. Parameters "enable_voting_ensemble" and "enable_stack_ensemble" have not been specified, so the default values are set to "True".**
 
-![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig9.jpg)
+![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig9.JPG)
 
 ### Pipeline comparison
 #### Pipeline and accuracy differences between Hyperparameter tuning and Automated ML:
