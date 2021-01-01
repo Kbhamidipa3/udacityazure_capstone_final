@@ -189,3 +189,5 @@ Then the deployed model is successfully tested as shown below and a confusion ma
 
 ## Proof of cluster clean up
 **Cluster cleanup is included in the code.**
+
+## Standout Suggestions
