@@ -64,14 +64,7 @@ https://raw.githubusercontent.com/Kbhamidipa3/udacityazure_capstone_final/main/L
 
 
 
-
-
-
-
-
-
-
- ### Hyperparameter Tuning parameters
+### Hyperparameter Tuning parameters
 Hyperparameter tuning method is used to tune the two parameters defined in train.py to achieve the best prediction accuracy- Inverse of Regularization Strength (denoted by C) and Maximum Iterations (denoted by max_iter). The former parameter, “C”, helps to avoid overfitting. The parameter max_iter dictates the maximum number of iterations for the regression model so that the model doesn't run for too long resulting in diminishing returns. These parameters are randomly sampled using the RandomParameterSampling method to understand the impact of the parameters on the output prediction accuracy. Four sets of "C" values and five sets of "max_iter" values were chosen for this particular study as shown in the image below:
 
 ![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig7.JPG)
@@ -92,12 +85,15 @@ For train/test splitting, no specific test size is entered for the AutoML case, 
 ### Pipeline comparison
 #### Pipeline and accuracy differences between Hyperparameter tuning and Automated ML:
 ##### Hyperparameter Tuning:
-In the Hyperparameter tuning method, the tabular data is split into test/train data using the train.py model and Scikit-learn is used to perform Logistic Regression. This is subsequently called in the Hyperparameter tuning code and the parameters are randomly sampled. The parameters seemed to however have little impact on the final accuracy as all the runs performed using different combinations of parameters yielded the accuracy between 0.9126 and 0.9206. The best model identified by the hypertuning method (hp_trained_model.pkl) is uploaded to the main Github folder.**
+
+In the Hyperparameter tuning method, the tabular data is split into test/train data using the train.py model and Scikit-learn is used to perform Logistic Regression. This is subsequently called in the Hyperparameter tuning code and the parameters are randomly sampled. 
 
 
 ![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig10.jpg)
 
 ![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig11.jpg)
+
+The parameters seemed to however have little impact on the final accuracy as all the runs performed using different combinations of parameters yielded the accuracy between 0.9126 and 0.9206.
 
 ![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig12.jpg)
 
@@ -109,53 +105,47 @@ In the Hyperparameter tuning method, the tabular data is split into test/train d
 
 ![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig16.jpg)
 
+he best model identified by the hypertuning method (hp_trained_model.pkl) is uploaded to the main Github folder.
+
+
 ![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig17.jpg)
 
 ![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig18.jpg)
 
 #### Automated ML:
-**On the other hand, in the case of Automated ML, cleaned data obtained from the train.py module was split into train and test data within the Automated ML code itself and the data was uploaded to a datastore. The Automated ML method evaluated 45 different runs and chose "VotingEnsemble" as the best performing model with an accuracy of 0.91753. While the difference in accuracy is relatively smaller, Automated ML method definitely showed a higher accuracy than the Hyperparameter tuning method. This could be attributed to the superiority of the Automated ML method in sweeping through a more optimum space to find the best fit. The best model identified by the Automated ML method (automl_best_model.pkl) is uploaded to the main Github folder.**
+On the other hand, in the case of Automated ML, cleaned data obtained from the train.py module was split into train, validation and test data and accessed from Github links. The Automated ML method evaluated 43 different runs and chose "StandardScaleWrapper, XGBoostClassifier" as the best performing model with an accuracy of 0.92857. 
+While the difference in accuracy is relatively smaller, Automated ML method definitely showed a higher accuracy than the Hyperparameter tuning method. This could be attributed to the superiority of the Automated ML method in sweeping through a more optimum space to find the best fit. The best model identified by the Automated ML method (model.pkl) is uploaded to the main Github folder.
 
-![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_p1_final/blob/main/images/AML%201.jpg)
+![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig19.jpg)
 
-![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_p1_final/blob/main/images/AML%202.jpg)
+![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig20.jpg)
+
 
 ### Best Automated ML Method:
-**As shown below, "VotingEnsemble" method is chosen as the best Automated ML method as it had the highest accuracy (0.91753) of all the models. VotingEnsemble method implements soft voting on an ensemble of previous Auto ML runs and "Stacking" is the ensemble learning method used. Soft vote uses average of predicted probabilities.**
+As shown below, "StandardScaleWrapper, XGBoostClassifier" method is chosen as the best Automated ML method as it had the highest accuracy (0.92857) of all the models. VotingEnsemble method implements soft voting on an ensemble of previous Auto ML runs and "Stacking" is the ensemble learning method used. Soft vote uses average of predicted probabilities.
+
+![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig21.jpg)
+
+![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig22.jpg)
+
+![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig23.jpg)
+
+The image below shows "Precision - Recall" plot. It shows how closely the model tracks the ideal behavior. The closer the curve to the ideal line, the better is the model.
+
+![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig24.jpg)
+
+Another way to interpret the accuracy of the model is using "Calibration Curve". The datapoints are tracking the ideal line well.
+
+![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig25.jpg)
+
+The overall summary is provided in the following image.
+
+![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig26.jpg)
+
+The following confusion matrix shows that the model has the most "True Positives" predictions (115), which confirms that the trained model is performing well. However, the higher "False Positives" and fewer "True Negatives" is concerning. This indicates Classification imbalance in the original data and could be improved by chosing data with more balanced positives and negatives (future recommendation).
 
 
-![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_p1_final/blob/main/images/AML%203.jpg)
-
-![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_p1_final/blob/main/images/AML%204.jpg)
-
-
-**The algorithms used in the ensemble operation and the corresponding weights are listed below.**
-
-
-![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_p1_final/blob/main/images/AML%205.jpg)
-
-
-![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_p1_final/blob/main/images/AML%206.JPG)
-
-
-
-
-**The image below shows "Precision - Recall" plot. It shows how closely the model tracks the ideal behavior. The closer the curve to the ideal line, the better is the model.** 
-
-
-![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_p1_final/blob/main/images/AML%2010.JPG)
-
-
-**Another way to interpret the accuracy of the model is using "Calibration Curve". The datapoints are tracking the ideal line well.** 
-
-
-![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_p1_final/blob/main/images/AML%2011.JPG)
-
-
-**The following confusion matrix shows that the model has the most "True Positives" predictions (21138), which confirms that the trained model is performing well. "True Negatives" are also higher than "False Negatives".**
-
-
-![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_p1_final/blob/main/images/AML%2012.JPG)
+![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig27.jpg)
 
 
 
@@ -167,13 +157,35 @@ Hyperparameter Tuning Accuracy | Automated ML Accuracy
 ------------ | -------------
 0.9206|0.9286
 
+## Deploy and Test the Model:
+
+The next step is to deploy the best model for consumption by the end user. For this, the best model is selected from the AutoML run and is deployed using Python code. As shown in the image below, the deployment was successful as indicated by the "Healthy" status.
+
+![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig28.jpg)
+
+![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig29.jpg)
+
+Key-based autherntication and Application Insights are enabled. Swagger json file, autherntication keys and REST Endpoints are created.
+
+![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig30.jpg)
+
+![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig31.jpg)
 
 
-## Future work
+Then the deployed model is successfully tested as shown below and a confusion matrix is generated based on the test data:
+
+![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig32.jpg)
+
+![GitHub Logo](https://github.com/Kbhamidipa3/udacityazure_capstone_final/blob/main/images/Fig33.jpg)
+
+## Screencast Link:
+
+## Future work:
 **In the future, the following improvements can be made to the models to potentially improve accuracy:**
-* Try different train/test split ratios
+* Even though the accuracy of the model was high, Precision-Recall curves showed poor "Macro" behavior. This is caused because of classification-imbalance, which is due to the dataset. In the future, there is a possibility to chose a more balanced dataset.
 * Explore other sampling methods
 * Sample other parameters that haven't been tested in this project
+* Use the same data to perform Linear Regression instead of Logistic Regression
 
 ## Proof of cluster clean up
 **Cluster cleanup is included in the code.**
